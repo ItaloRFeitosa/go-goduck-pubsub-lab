@@ -1,0 +1,25 @@
+services:
+  database:
+    image: bitnami/postgresql:16
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASS}
+      - POSTGRESQL_DATABASE=${DB_NAME}
+    volumes:
+      - pgdata:/bitnami/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    ports:
+      - "8085:8085"
+    command: gcloud beta emulators pubsub start --project=${GOOGLE_PROJECT_ID} --host-port='0.0.0.0:8085'
+
+volumes:
+  pgdata:
+
+networks:
+  backend:
+    driver: bridge
